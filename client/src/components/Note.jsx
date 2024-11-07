@@ -1,9 +1,11 @@
 import { Delete, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
+import Content from "./Content";
 
 /* eslint-disable react/prop-types */
 export default function Note({ data, onDelete, onEdit }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [contentOpen, setContentOpen] = useState(false);
 
   // console.log(data);
   // Array of gradient backgrounds
@@ -26,14 +28,21 @@ export default function Note({ data, onDelete, onEdit }) {
   return (
     <div
       className={`relative flex flex-col gap-2 justify-start min-w-48 max-w-[25%] rounded-lg border-2 border-indigo-400  p-4 shadow-lg hover:shadow-2xl transition-shadow duration-200 ${randomGradient}`}
+      onClick={() => setContentOpen(true)}
     >
       <h1 className="text-2xl font-bold text-indigo-700">{data.title}</h1>
-      <div className="text-md text-indigo-900">{data.description}</div>
+      <div className="text-md text-indigo-900">{`${data.description.substr(
+        0,
+        100
+      )}...`}</div>
 
       {/* Three-dot menu button */}
       <div className="absolute bottom-2 right-2">
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMenuOpen(!menuOpen);
+          }}
           className="p-2 text-gray-600 hover:text-gray-800"
         >
           &#x22EE; {/* Vertical ellipsis (three dots) */}
@@ -43,7 +52,8 @@ export default function Note({ data, onDelete, onEdit }) {
         {menuOpen && (
           <div className="absolute right-0 bottom-8 bg-white border border-gray-200 rounded-lg shadow-lg p-2">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onEdit(data);
                 setMenuOpen(false);
               }}
@@ -52,7 +62,8 @@ export default function Note({ data, onDelete, onEdit }) {
               <Edit />
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onDelete(data._id);
                 setMenuOpen(false);
               }}
@@ -63,6 +74,13 @@ export default function Note({ data, onDelete, onEdit }) {
           </div>
         )}
       </div>
+      {contentOpen && (
+        <Content
+          data={data}
+          setContentOpen={setContentOpen}
+          randomGradient={randomGradient}
+        />
+      )}
     </div>
   );
 }
