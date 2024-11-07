@@ -12,14 +12,12 @@ function Home({ user, setUser, setAccessToken }) {
   const [open, setOpen] = useState(false);
   const [notesArr, setNotesArr] = useState([]);
   const [noteToEdit, setNoteToEdit] = useState(null);
-
-  // console.log(notesArr);
+  const [filter, setFilter] = useState("");
 
   const getCurrentUser = async () => {
     await axios
       .get("/user/current-user")
       .then(function (res) {
-        // console.log(res);
         setUser(res.data.data);
       })
       .catch(function (error) {
@@ -34,7 +32,6 @@ function Home({ user, setUser, setAccessToken }) {
     await axios
       .get("/notes/")
       .then(function (res) {
-        // console.log(res);
         setNotesArr(res.data.data);
       })
       .catch(function (error) {
@@ -45,8 +42,8 @@ function Home({ user, setUser, setAccessToken }) {
   const onDelete = async (id) => {
     await axios
       .delete(`/notes/${id}`)
-      .then(function (res) {
-        console.log(`${res.data.message}`, res.data.data);
+      .then(function () {
+        // console.log(`${res.data.message}`, res.data.data);
         setNotesArr((prevState) => prevState.filter((note) => note._id !== id));
       })
       .catch(function (error) {
@@ -63,31 +60,36 @@ function Home({ user, setUser, setAccessToken }) {
     getCurrentUser();
     getAllNotes();
   }, []);
-  return (
-    <div className=" relative h-screen flex  flex-col ">
-      <Navbar user={user} />
 
-      <div className="flex  flex-wrap gap-2 justify-evenly w-full  p-4">
-        {notesArr.map((note) => {
-          return (
-            <Note
-              key={note._id}
-              data={note}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          );
-        })}
+  // Filter notes based on the search filter
+  const filteredNotes = notesArr.filter((note) =>
+    note.title.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <div className="relative h-screen flex flex-col">
+      <Navbar user={user} filter={filter} setFilter={setFilter} />
+
+      <div className="flex flex-wrap gap-2 justify-evenly w-full p-4">
+        {filteredNotes.map((note) => (
+          <Note
+            key={note._id}
+            data={note}
+            onDelete={onDelete}
+            onEdit={onEdit}
+          />
+        ))}
 
         {open && (
           <NoteModel
             setOpen={setOpen}
             noteToEdit={noteToEdit}
             setNoteToEdit={setNoteToEdit}
+            setNotesArr={setNotesArr}
           />
         )}
 
-        {/* create Note Button */}
+        {/* Create Note Button */}
         <div
           className="text-4xl text-slate-200 font-bold absolute bottom-8 right-8 border-2 border-slate-200 bg-indigo-600 rounded-lg px-3 py-1 cursor-pointer"
           onClick={() => setOpen(true)}
@@ -100,7 +102,3 @@ function Home({ user, setUser, setAccessToken }) {
 }
 
 export default Home;
-
-// #61916F
-// #0B4C54
-// #B6D2AF

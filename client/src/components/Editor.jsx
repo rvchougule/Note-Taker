@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import Paragraph from "@editorjs/paragraph";

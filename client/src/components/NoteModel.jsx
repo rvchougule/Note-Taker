@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
-import Editor from "./Editor";
-
-export default function NoteModel({ setOpen, noteToEdit, setNoteToEdit }) {
+export default function NoteModel({
+  setOpen,
+  noteToEdit,
+  setNoteToEdit,
+  setNotesArr,
+}) {
   const [note, setNote] = useState({
     title: "",
     description: "",
@@ -19,7 +22,7 @@ export default function NoteModel({ setOpen, noteToEdit, setNoteToEdit }) {
     if (noteToEdit) {
       setNote({
         title: noteToEdit?.title || "",
-        description: noteToEdit?.description?.blocks || "",
+        description: noteToEdit?.description || "",
       });
     }
   }, [noteToEdit]);
@@ -62,7 +65,13 @@ export default function NoteModel({ setOpen, noteToEdit, setNoteToEdit }) {
           description: note.description,
         })
         .then((res) => {
-          console.log(`${res.data.message}`, res.data.data);
+          // console.log(`${res.data.message}`, res.data.data);
+
+          setNotesArr((prevState) => {
+            return prevState.map((note) =>
+              note._id === noteToEdit._id ? res.data.data : note
+            );
+          });
           setOpen(false);
         })
         .catch((error) => {
@@ -77,6 +86,9 @@ export default function NoteModel({ setOpen, noteToEdit, setNoteToEdit }) {
         })
         .then((res) => {
           console.log(`${res.data.message}`, res.data.data);
+          setNotesArr((prevState) => {
+            return [...prevState, res.data.data];
+          });
           setOpen(false);
         })
         .catch((error) => {
@@ -129,7 +141,18 @@ export default function NoteModel({ setOpen, noteToEdit, setNoteToEdit }) {
           >
             Description
           </label>
-          <Editor id="description" note={note} setNote={setNote} />
+          <textarea
+            id="description"
+            name="description"
+            rows="50"
+            cols="50"
+            value={note.description}
+            onChange={handleChange}
+            className="block max-h-[20vw] w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6 overflow-y-scroll"
+          >
+            Let&apos;s take a note!
+          </textarea>
+
           <p className="text-sm text-red-500 font-semibold">
             {errors.description}
           </p>

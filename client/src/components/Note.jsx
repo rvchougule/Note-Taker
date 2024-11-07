@@ -1,5 +1,4 @@
 import { Delete, Edit } from "lucide-react";
-import Content from "./Content";
 import { useEffect, useState } from "react";
 
 /* eslint-disable react/prop-types */
@@ -29,11 +28,7 @@ export default function Note({ data, onDelete, onEdit }) {
       className={`relative flex flex-col gap-2 justify-start min-w-48 max-w-[25%] rounded-lg border-2 border-indigo-400  p-4 shadow-lg hover:shadow-2xl transition-shadow duration-200 ${randomGradient}`}
     >
       <h1 className="text-2xl font-bold text-indigo-700">{data.title}</h1>
-      <div className="text-md text-indigo-900">
-        {data.description.blocks.map((block, index) => (
-          <Content block={block} key={index} />
-        ))}
-      </div>
+      <div className="text-md text-indigo-900">{data.description}</div>
 
       {/* Three-dot menu button */}
       <div className="absolute bottom-2 right-2">

@@ -1,7 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Search, Bell } from "lucide-react";
 
-export default function Navbar({ user }) {
+export default function Navbar({ user, filter, setFilter }) {
+  const handleChange = (e) => {
+    const { value } = e.target;
+    setFilter(value);
+  };
   return (
     <div className="sticky top-0  flex  w-full items-center justify-between px-4 py-2 shadow-lg bg-white ">
       <span className="text-sm lg:text-xl  font-bold ">NoteTaker</span>
@@ -11,6 +15,8 @@ export default function Navbar({ user }) {
           className=" focus:ring-0 focus:ring-offset-0 bg-transparent border-none"
           type="text"
           placeholder="Search"
+          value={filter}
+          onChange={handleChange}
         />
       </div>
 
